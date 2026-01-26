@@ -1,0 +1,22 @@
+{
+    "items": [
+        {
+            "taskName": "Clean the Living Room",
+            "assignedTo": "Anopa",
+            "points": 20,
+            "completed": false
+        },
+        {
+            "taskName": "Wash the Dishes",
+            "assignedTo": "Anotida",
+            "points": 15,
+            "completed": false
+        },
+        {
+            "taskName": "Water the Plants",
+            "assignedTo": "Tina",
+            "points": 10,
+            "completed": false
+        }
+    ]
+}

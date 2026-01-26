@@ -1,0 +1,30 @@
+<mvc:View
+    controllerName="family.dash.controller.Chores"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <Page id="choresPage" title="My Chores" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <List 
+                id="choresList" 
+                items="{chores>/items}" 
+                headerText="Weekly Tasks"
+                noDataText="All caught up!">
+                <StandardListItem
+                    id="choreItem"
+                    title="{chores>taskName}"
+                    description="Assigned to: {chores>assignedTo}"
+                    info="{= ${chores>completed} ? 'Done' : 'Pending' }"
+                    infoState="{chores>state}"
+                    icon="{chores>icon}"
+                    type="Navigation" />
+            </List>
+        </content>
+        <footer>
+            <OverflowToolbar id="choresFooterToolbar">
+                <ToolbarSpacer id="footerSpacer" />
+                <Button id="claimRewardsButton" text="Claim Rewards" type="Emphasized" press=".onClaimRewards" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
