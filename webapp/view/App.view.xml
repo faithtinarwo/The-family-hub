@@ -4,6 +4,6 @@
     displayBlock="true"
     xmlns="sap.m">
     <Shell id="shell">
-        <App id="mainApp" />
+        <App id="app" /> 
     </Shell>
 </mvc:View>

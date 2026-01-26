@@ -25,7 +25,7 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
         "rootView": {
             "viewName": "family.dash.view.App",
             "type": "XML",
@@ -66,7 +66,7 @@
                 "routerClass": "sap.m.routing.Router",
                 "viewType": "XML",
                 "viewPath": "family.dash.view",
-                "controlId": "mainApp",
+                "controlId": "app",
                 "controlAggregation": "pages",
                 "async": true
             },
@@ -77,21 +77,19 @@
                     "target": "homeTarget"
                 },
                 {
-                    "pattern": "chores",
-                    "name": "choresRoute",
-                    "target": "choresTarget"
+                    "pattern": "member/{name}",
+                    "name": "memberDetail",
+                    "target": "memberTarget"
                 }
             ],
             "targets": {
                 "homeTarget": {
-                    "viewName": "Main",
-                    "viewId": "mainView",
-                    "viewLevel": 1
+                    "name": "Main",
+                    "id": "mainView"
                 },
-                "choresTarget": {
-                    "viewName": "Chores",
-                    "viewId": "choresView",
-                    "viewLevel": 2
+                "memberTarget": {
+                    "name": "MemberDetail",
+                    "id": "memberDetailView"
                 }
             }
         }
