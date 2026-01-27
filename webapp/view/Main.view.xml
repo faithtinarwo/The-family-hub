@@ -21,7 +21,8 @@
                 
                 <Title id="t1" text="Household" class="sapUiSmallMarginBottom" />
                 <layout:Grid id="g1" defaultSpan="XL3 L3 M6 S12" hSpacing="0.5" vSpacing="0.5">
-                    <GenericTile id="shoppingTile" header="Shopping List" press=".onOpenChores">
+                    
+                    <GenericTile id="shoppingTile" header="Shopping List" press=".onOpenShopping">
                         <TileContent id="tc1">
                             <NumericContent id="nc1" value="{path: 'family>/shopping', formatter: '.itemsCount'}" icon="sap-icon://cart" />
                         </TileContent>

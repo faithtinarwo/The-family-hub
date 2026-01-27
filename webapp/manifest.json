@@ -54,7 +54,9 @@
 			},
 			"chores": {
 				"type": "sap.ui.model.json.JSONModel",
-				"dataSource": "choresDataSource"
+				"settings": {
+					"dataSource": "choresDataSource"
+				}
 			}
 		},
 		"routing": {
