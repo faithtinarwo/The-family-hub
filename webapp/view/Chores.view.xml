@@ -5,19 +5,19 @@
     xmlns:l="sap.ui.layout">
     <Page id="choresPage" title="My Chores" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <List 
-                id="choresList" 
-                items="{chores>/items}" 
-                headerText="Weekly Tasks"
-                noDataText="All caught up!">
-                <StandardListItem
-                    id="choreItem"
-                    title="{chores>taskName}"
-                    description="Assigned to: {chores>assignedTo}"
-                    info="{= ${chores>completed} ? 'Done' : 'Pending' }"
-                    infoState="{chores>state}"
-                    icon="{chores>icon}"
-                    type="Navigation" />
+            <List id="choresList" 
+                  items="{chores>/items}" 
+                  headerText="Tasks for Today"
+                  noDataText="All caught up! Time to relax.">
+                <CustomListItem id="choreListItem">
+                    <HBox id="choreItemBox" alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMargin">
+                        <VBox id="choreTextContainer">
+                            <Text id="choreNameText" text="{chores>taskName}" renderWhitespace="true" class="sapUiSmallMarginBottom" />
+                            <Label id="choreRewardLabel" text="Reward: {chores>points} points" design="Bold" />
+                        </VBox>
+                        <CheckBox id="choreStatusCheckBox" selected="{chores>completed}" select=".onTaskStatusChange" />
+                    </HBox>
+                </CustomListItem>
             </List>
         </content>
         <footer>

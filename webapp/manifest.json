@@ -1,97 +1,93 @@
 {
-    "_version": "1.58.0",
-    "sap.app": {
-        "id": "family.dash",
-        "type": "application",
-        "i18n": "i18n/i18n.properties",
-        "applicationVersion": {
-            "version": "1.0.0"
-        },
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}",
-        "dataSources": {
-            "choresLocalSource": {
-                "uri": "model/chores.json",
-                "type": "JSON"
-            }
-        }
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "family.dash",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
     },
-    "sap.ui": {
-        "technology": "UI5",
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        }
-    },
-    "sap.ui5": {
-        "flexEnabled": false,
-        "rootView": {
-            "viewName": "family.dash.view.App",
-            "type": "XML",
-            "async": true,
-            "id": "app"
-        },
-        "dependencies": {
-            "minUI5Version": "1.120.0",
-            "libs": {
-                "sap.m": {},
-                "sap.f": {},
-                "sap.ui.core": {},
-                "sap.ui.layout": {}
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
-        },
-        "models": {
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "family.dash.i18n.i18n",
-                    "supportedLocales": ["en", ""],
-                    "fallbackLocale": "en"
-                }
-            },
-            "chores": {
-                "dataSource": "choresLocalSource",
-                "settings": {
-                    "defaultBindingMode": "TwoWay"
-                }
-            }
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "viewPath": "family.dash.view",
-                "controlId": "app",
-                "controlAggregation": "pages",
-                "async": true
-            },
-            "routes": [
-                {
-                    "pattern": "",
-                    "name": "home",
-                    "target": "homeTarget"
-                },
-                {
-                    "pattern": "member/{name}",
-                    "name": "memberDetail",
-                    "target": "memberTarget"
-                }
-            ],
-            "targets": {
-                "homeTarget": {
-                    "name": "Main",
-                    "id": "mainView"
-                },
-                "memberTarget": {
-                    "name": "MemberDetail",
-                    "id": "memberDetailView"
-                }
-            }
-        }
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}"
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
     }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "rootView": {
+      "viewName": "family.dash.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.f": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "family.dash.i18n.i18n"
+        }
+      },
+      "chores": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/chores.json"
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "family.dash.view",
+        "controlId": "idAppControl",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "mainRoute",
+          "pattern": "",
+          "target": [
+            "targetMain"
+          ]
+        },
+        {
+          "name": "choresRoute",
+          "pattern": "chores",
+          "target": [
+            "targetChores"
+          ]
+        }
+      ],
+      "targets": {
+        "targetMain": {
+          "viewId": "Main",
+          "viewName": "Main",
+          "viewLevel": 1
+        },
+        "targetChores": {
+          "viewId": "Chores",
+          "viewName": "Chores",
+          "viewLevel": 2
+        }
+      }
+    }
+  }
 }

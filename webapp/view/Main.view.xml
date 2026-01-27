@@ -3,121 +3,54 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.f"
-    xmlns:core="sap.ui.core"
     xmlns:layout="sap.ui.layout"
-    xmlns:form="sap.ui.layout.form">
-    <f:DynamicPage id="dynamicPageId" headerExpanded="true">
+    displayBlock="true">
+    
+    <f:DynamicPage id="dynamicPageId" headerExpanded="true" toggleHeaderOnTitleClick="true">
         <f:title>
-            <f:DynamicPageTitle id="pageTitleId">
+            <f:DynamicPageTitle id="pageTitle">
                 <f:heading>
-                    <Title id="mainDashboardTitle" text="Family Hub 2026" titleStyle="H3"/>
+                    <Title id="mainTitle" text="{i18n>mainPageTitle}" />
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
 
-        <f:header>
-            <f:DynamicPageHeader id="pageHeader">
-                <layout:Grid id="headerGrid" defaultSpan="XL4 L4 M6 S12">
-                    <VBox id="bioContainer">
-                        <Title id="bioTitle" text="About Our Hub" titleStyle="H4" />
-                        <Text id="bioText" text="Track groceries and chores. Earn points!" />
-                    </VBox>
-                    
-                    <VBox id="pointsBankContainer">
-                        <Title id="pointsTitle" text="Points Bank" titleStyle="H4" />
-                        <HBox id="pointsBox" alignItems="Center">
-                            <ObjectStatus id="statusTina" title="Tina" text="{family>/points/Tina}" state="Success" class="sapUiTinyMarginEnd" />
-                            <ObjectStatus id="statusAnopa" title="Anopa" text="{family>/points/Anopa}" state="Warning" class="sapUiTinyMarginEnd" />
-                            <ObjectStatus id="statusAnotida" title="Anotida" text="{family>/points/Anotida}" state="Information" />
-                        </HBox>
-                    </VBox>
-
-                    <VBox id="progressContainer">
-                        <Title id="goalTitle" text="Weekly Goal" titleStyle="H4" />
-                        <ProgressIndicator id="familyProgress" percentValue="0" displayValue="0%" state="Success" height="1.5rem" />
-                    </VBox>
-                </layout:Grid>
-            </f:DynamicPageHeader>
-        </f:header>
-
         <f:content>
-            <IconTabBar id="idIconTabBar" select=".onTabSelect" expandable="false">
-                <items>
-                    <IconTabFilter id="shoppingTab" icon="sap-icon://cart" text="Shopping" key="shopping">
-                        <VBox id="shopVBox" class="sapUiSmallMargin">
-                            <HBox id="shopInputHbox" alignItems="Center" class="sapUiSmallMarginBottom">
-                                <Input id="addItemInput" placeholder="Add grocery item..." />
-                                <Button id="btnAddShopItem" icon="sap-icon://add" press=".onAddItem" type="Emphasized" />
-                            </HBox>
-                            <List id="shoppingList" items="{family>/shopping}" headerText="Groceries">
-                                <InputListItem id="shopItemTemplate" label="{family>item}">
-                                    <CheckBox id="checkBought" selected="{family>bought}" />
-                                </InputListItem>
-                            </List>
-                        </VBox>
-                    </IconTabFilter>
+            <VBox id="mainContainer" class="sapUiSmallMargin">
+                
+                <Title id="householdTitle" text="{i18n>householdTitle}" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                <layout:Grid id="householdGrid" defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMarginBottom">
+                    <GenericTile id="shoppingTile" header="{i18n>shoppingTileTitle}" subheader="{i18n>shoppingTileSub}" press=".onOpenShopping">
+                        <TileContent id="shoppingContent">
+                            <NumericContent id="shoppingNum" value="5" indicator="Up" valueColor="Critical" icon="sap-icon://cart" />
+                        </TileContent>
+                    </GenericTile>
 
-                    <IconTabFilter id="rewardsTab" icon="sap-icon://unpaid-leave" text="Rewards" key="rewards">
-                        <List id="rewardsList" items="{family>/rewards}">
-                            <StandardListItem id="rewardItemTemplate" title="{family>title}" description="{family>cost} pts" type="Active" press=".onRedeemReward" />
-                        </List>
-                    </IconTabFilter>
+                    <GenericTile id="choresTile" header="{i18n>choresTileTitle}" subheader="{i18n>choresTileSub}" press=".onOpenChores">
+                        <TileContent id="choresContent">
+                            <NumericContent id="choresNum" value="3" valueColor="Good" icon="sap-icon://checklist" />
+                        </TileContent>
+                    </GenericTile>
+                </layout:Grid>
 
-                    <IconTabFilter id="historyTab" icon="sap-icon://history" text="History" key="history">
-                        <List id="historyList" items="{family>/history}">
-                            <StandardListItem id="histItemTemplate" title="{family>text}" info="{family>time}" />
-                        </List>
-                    </IconTabFilter>
+                <Toolbar id="spacer" height="2rem" style="Clear" />
 
-                    <IconTabFilter id="adminTab" icon="sap-icon://settings" text="Admin" key="admin">
-                        <VBox id="adminVbox" class="sapUiSmallMargin">
-                            <OverflowToolbar id="adminToolbar">
-                                <Title id="adminTitle" text="Parental Controls" />
-                                <ToolbarSpacer id="adminSpacer" />
-                                <Button id="btnWeeklyReset" text="Reset" type="Reject" press=".onResetWeeklyPoints" />
-                            </OverflowToolbar>
+                <Title id="mgmtTitle" text="{i18n>mgmtTitle}" titleStyle="H4" class="sapUiSmallMarginBottom" />
+                <layout:Grid id="mgmtGrid" defaultSpan="XL3 L3 M6 S12">
+                    <GenericTile id="leaveTile" header="{i18n>leaveTileTitle}" subheader="{i18n>leaveTileSub}" press=".onOpenLeave">
+                        <TileContent id="leaveContent">
+                            <FeedContent id="leaveFeed" subheader="2 New Requests" />
+                        </TileContent>
+                    </GenericTile>
 
-                            <form:SimpleForm id="choreForm" editable="true" layout="ResponsiveGridLayout">
-                                <form:content>
-                                    <Label id="lblChoreName" text="Chore Name" />
-                                    <Input id="inputNewChore" />
-                                    <Label id="lblAssignTo" text="Assign To" />
-                                    <Select id="selectAssignee">
-                                        <core:Item id="itemTina" key="Tina" text="Tina" />
-                                        <core:Item id="itemAnopa" key="Anopa" text="Anopa" />
-                                        <core:Item id="itemAnotida" key="Anotida" text="Anotida" />
-                                    </Select>
-                                    <Label id="lblPts" text="Points" />
-                                    <StepInput id="stepPoints" value="10" />
-                                    <Button id="btnCreateChore" text="Assign" press=".onCreateChore" type="Accept" />
-                                </form:content>
-                            </form:SimpleForm>
+                    <GenericTile id="mealTile" header="{i18n>mealTileTitle}" subheader="{i18n>mealTileSub}" press=".onOpenMeals">
+                        <TileContent id="mealContent">
+                            <ImageContent id="mealImage" src="sap-icon://meal" />
+                        </TileContent>
+                    </GenericTile>
+                </layout:Grid>
 
-                            <Table id="adminTable" items="{chores>/items}">
-                                <columns>
-                                    <Column id="colTask"><Text id="txtColTask" text="Chore" /></Column>
-                                    <Column id="colUser"><Text id="txtColUser" text="Person" /></Column>
-                                    <Column id="colPts"><Text id="txtColPts" text="Pts" /></Column>
-                                    <Column id="colActs" hAlign="End"><Text id="txtColActs" text="Actions" /></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="adminRowTemplate">
-                                        <cells>
-                                            <Text id="txtTaskName" text="{chores>taskName}" />
-                                            <Text id="txtAssigned" text="{chores>assignedTo}" />
-                                            <ObjectNumber id="numPts" number="{chores>points}" />
-                                            <HBox id="rowActionBox" justifyContent="End">
-                                                <Button id="btnRowDone" icon="sap-icon://accept" press=".onCompleteChore" class="sapUiTinyMarginEnd" />
-                                                <Button id="btnRowDel" icon="sap-icon://delete" press=".onDeleteChore" />
-                                            </HBox>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </VBox>
-                    </IconTabFilter>
-                </items>
-            </IconTabBar>
+            </VBox>
         </f:content>
     </f:DynamicPage>
 </mvc:View>
