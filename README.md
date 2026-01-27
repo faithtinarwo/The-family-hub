@@ -5,7 +5,7 @@ The Family Hub Dashboard is a productivity application built using the SAPUI5 fr
 In a corporate context, this application serves as a prototype for a Task Management and Incentive Tracking System, demonstrating core competencies in data binding, routing, and role-based access control.
 
 Key Features
-Role-Based Access Control: Secure Admin tab protected by a Parental Gate (PIN: 1991).
+Role-Based Access Control: Secure Admin tab protected by a Parental Gate (PIN: ).
 
 Two-Way Data Binding: Real-time synchronization between the UI and JSON data models.
 
