@@ -4,6 +4,7 @@
     xmlns="sap.m"
     xmlns:f="sap.f"
     xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core"
     displayBlock="true">
     
     <f:DynamicPage id="mainPage">
@@ -19,10 +20,10 @@
             <VBox id="mainVBox" class="sapUiSmallMargin">
                 
                 <Title id="t1" text="Household" class="sapUiSmallMarginBottom" />
-                <layout:Grid id="g1" defaultSpan="XL3 L3 M6 S12">
+                <layout:Grid id="g1" defaultSpan="XL3 L3 M6 S12" hSpacing="0.5" vSpacing="0.5">
                     <GenericTile id="shoppingTile" header="Shopping List" press=".onOpenChores">
                         <TileContent id="tc1">
-                            <NumericContent id="nc1" value="5" icon="sap-icon://cart" />
+                            <NumericContent id="nc1" value="{path: 'family>/shopping', formatter: '.itemsCount'}" icon="sap-icon://cart" />
                         </TileContent>
                     </GenericTile>
 
@@ -33,15 +34,43 @@
                     </GenericTile>
                 </layout:Grid>
 
+                <Panel id="shoppingPanel" headerText="Active Shopping List" expandable="true" expanded="true" class="sapUiMediumMarginTop">
+                    <headerToolbar>
+                        <OverflowToolbar id="tbShopping">
+                            <Title id="shTitle" text="Quick Shop" />
+                            <ToolbarSpacer id="sp1" />
+                            <Input id="addItemInput" placeholder="Add items..." width="auto">
+                                <layoutData>
+                                    <OverflowToolbarLayoutData id="addItemLayoutData" priority="Low" />
+                                </layoutData>
+                            </Input>
+                            <Button id="btnAddItem" icon="sap-icon://add" type="Emphasized" press=".onAddItem" />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <List id="shoppingList" items="{family>/shopping}" noDataText="List is empty!">
+                        <CustomListItem id="shopItemTemplate">
+                            <HBox id="hbItem" alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiTinyMarginTopBottom">
+                                <HBox id="hbLeft" alignItems="Center">
+                                    <core:Icon id="icoCart" src="sap-icon://cart" class="sapUiSmallMarginEnd" />
+                                    <Text id="txtItemName" text="{family>item}" wrapping="true" />
+                                </HBox>
+                                <HBox id="hbActions">
+                                    <Button id="btnDeleteShop" icon="sap-icon://delete" type="Transparent" press=".onDeleteItem" />
+                                </HBox>
+                            </HBox>
+                        </CustomListItem>
+                    </List>
+                </Panel>
+
                 <Title id="t2" text="Management (Locked)" class="sapUiMediumMarginTop sapUiSmallMarginBottom" />
-                <layout:Grid id="g2" defaultSpan="XL3 L3 M6 S12">
-                    <GenericTile id="adminTile" header="Parental Controls" frameType="OneByOne" press=".onOpenAdmin">
+                <layout:Grid id="g2" defaultSpan="XL3 L3 M6 S12" hSpacing="0.5" vSpacing="0.5">
+                    <GenericTile id="adminTile" header="Parental Controls" press=".onOpenAdmin">
                         <TileContent id="tc3" footer="Restricted">
                             <ImageContent id="ic1" src="sap-icon://settings" />
                         </TileContent>
                     </GenericTile>
 
-                    <GenericTile id="budgetTile" header="Budget Tracker" frameType="OneByOne" press=".onOpenAdmin">
+                    <GenericTile id="budgetTile" header="Budget Tracker" press=".onOpenAdmin">
                         <TileContent id="tc4" footer="Restricted">
                             <ImageContent id="ic2" src="sap-icon://money-bills" />
                         </TileContent>

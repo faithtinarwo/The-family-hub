@@ -61,6 +61,23 @@
                     </items>
                 </Table>
 
+                <Panel id="pnlCleanup" headerText="Data Maintenance" class="sapUiMediumMarginTop">
+                    <HBox id="hbCleanup" justifyContent="SpaceBetween" alignItems="Center">
+                        <VBox id="vbCleanupText">
+                            <Text id="txtCleanupInfo" text="Clear old history and shopping logs to keep the app fast." />
+                        </VBox>
+                        <MenuButton id="mbCleanup" text="Purge History" type="Ghost" icon="sap-icon://delete">
+                            <menu>
+                                <Menu id="menuPurge">
+                                    <MenuItem id="mi30" text="Older than 30 Days" icon="sap-icon://history" press=".onPurgeHistory" key="30" />
+                                    <MenuItem id="mi60" text="Older than 60 Days" icon="sap-icon://history" press=".onPurgeHistory" key="60" />
+                                    <MenuItem id="miAll" text="Delete Everything" icon="sap-icon://alert" press=".onPurgeHistory" key="all" />
+                                </Menu>
+                            </menu>
+                        </MenuButton>
+                    </HBox>
+                </Panel>
+
                 <Button id="btnResetPoints" text="Reset All Weekly Points" type="Reject" press=".onResetWeeklyPoints" class="sapUiMediumMarginTop" />
             </VBox>
         </f:content>

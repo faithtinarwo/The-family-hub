@@ -12,16 +12,30 @@ sap.ui.define([
 
     return Controller.extend("family.dash.controller.Main", {
         onInit: function () {
-            // 1. Initialize the local 'family' model
+            // Default data structure
             var oData = {
                 isAdmin: false,
                 points: { Tina: 100, Anopa: 50, Anotida: 50 },
                 shopping: [{ item: "Milk", bought: false }],
                 history: []
             };
-            this.getView().setModel(new JSONModel(oData), "family");
 
-            // 2. Initialize the 'chores' model from manifest
+            // Victory Lap: Load from Local Storage
+            try {
+                var sSaved = localStorage.getItem("familyData");
+                if (sSaved) {
+                    var oSavedData = JSON.parse(sSaved);
+                    oData.points = oSavedData.points || oData.points;
+                    oData.shopping = oSavedData.shopping || oData.shopping;
+                    oData.history = oSavedData.history || oData.history;
+                }
+            } catch (e) {
+                console.error("Local storage empty, using defaults.");
+            }
+
+            var oModel = new JSONModel(oData);
+            this.getView().setModel(oModel, "family");
+
             var oChoresModel = this.getOwnerComponent().getModel("chores");
             if (oChoresModel) {
                 oChoresModel.attachRequestCompleted(function() {
@@ -31,13 +45,26 @@ sap.ui.define([
         },
 
         /* =========================================================== */
-        /* SECURITY: THE PARENTAL GATE                                 */
+        /* FORMATTERS & HELPERS                                        */
+        /* =========================================================== */
+
+        itemsCount: function (aItems) {
+            return aItems ? aItems.length : 0;
+        },
+
+        _saveToLocal: function () {
+            var oData = this.getView().getModel("family").getData();
+            var oDataToSave = Object.assign({}, oData);
+            oDataToSave.isAdmin = false; // Security: Always lock on save
+            localStorage.setItem("familyData", JSON.stringify(oDataToSave));
+        },
+
+        /* =========================================================== */
+        /* SECURITY: THE PIN GATE                                      */
         /* =========================================================== */
 
         onOpenAdmin: function () {
             var oFamilyModel = this.getView().getModel("family");
-            
-            // If already logged in, go straight there
             if (oFamilyModel.getProperty("/isAdmin")) {
                 this.getOwnerComponent().getRouter().navTo("adminRoute");
             } else {
@@ -51,24 +78,23 @@ sap.ui.define([
                 id: "pinInput",
                 type: "Password", 
                 placeholder: "Enter PIN", 
-                textAlign: "Center",
-                submit: function() { oDialog.getBeginButton().firePress(); }
+                textAlign: "Center"
             });
             
             var oDialog = new Dialog({
                 title: "Parental Gate",
                 type: "Message",
-                content: [new Text({ text: "Please enter Parent PIN to access Management:" }), oInput],
+                content: [new Text({ text: "Please enter Parent PIN (1234):" }), oInput],
                 beginButton: new Button({
                     text: "Login",
                     type: "Emphasized",
                     press: function () {
-                        if (oInput.getValue() === "1234") { // Your Secret PIN
+                        if (oInput.getValue() === "1234") {
                             oView.getModel("family").setProperty("/isAdmin", true);
                             oDialog.close();
                             oView.getController().getOwnerComponent().getRouter().navTo("adminRoute");
                         } else {
-                            MessageToast.show("Wrong PIN! Access Denied.");
+                            MessageToast.show("Wrong PIN!");
                             oInput.setValue("");
                         }
                     }
@@ -86,10 +112,6 @@ sap.ui.define([
         /* DASHBOARD LOGIC                                             */
         /* =========================================================== */
 
-        onOpenChores: function () {
-            this.getOwnerComponent().getRouter().navTo("choresRoute");
-        },
-
         onAddItem: function () {
             var oModel = this.getView().getModel("family");
             var aShop = oModel.getProperty("/shopping") || [];
@@ -99,8 +121,24 @@ sap.ui.define([
                 aShop.push({ item: sNewItem, bought: false });
                 oModel.setProperty("/shopping", aShop);
                 this.byId("addItemInput").setValue("");
+                this._saveToLocal();
                 MessageToast.show("Added to list");
             }
+        },
+
+        onDeleteItem: function (oEvent) {
+            var oModel = this.getView().getModel("family");
+            var sPath = oEvent.getSource().getBindingContext("family").getPath();
+            var iIndex = parseInt(sPath.split("/").pop());
+            var aShop = oModel.getProperty("/shopping");
+
+            aShop.splice(iIndex, 1);
+            oModel.setProperty("/shopping", aShop);
+            this._saveToLocal();
+        },
+
+        onOpenChores: function () {
+            this.getOwnerComponent().getRouter().navTo("choresRoute");
         },
 
         _updateProgress: function () {
