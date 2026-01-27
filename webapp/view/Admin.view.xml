@@ -1,0 +1,68 @@
+<mvc:View
+    controllerName="family.dash.controller.Admin"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    <f:DynamicPage id="adminPage">
+        <f:title>
+            <f:DynamicPageTitle id="adminPageTitle">
+                <f:heading>
+                    <Title id="adminHeadingText" text="Parental Controls &amp; Chores" />
+                </f:heading>
+                <f:navigationActions>
+                    <Button id="btnNavBackHome" icon="sap-icon://home" tooltip="Back to Dashboard" press=".onNavBack" />
+                </f:navigationActions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:content>
+            <VBox id="adminContentContainer" class="sapUiSmallMargin">
+                <form:SimpleForm id="choreForm" title="Assign New Task" editable="true" layout="ResponsiveGridLayout">
+                    <form:content>
+                        <Label id="lblNewChore" text="Chore Name" />
+                        <Input id="inputNewChore" placeholder="e.g., Vacuuming" />
+                        
+                        <Label id="lblAssignTo" text="Assign To" />
+                        <Select id="selectAssignee">
+                            <core:Item id="itemTina" key="Tina" text="Tina" />
+                            <core:Item id="itemAnopa" key="Anopa" text="Anopa" />
+                            <core:Item id="itemAnotida" key="Anotida" text="Anotida" />
+                        </Select>
+                        
+                        <Label id="lblPointsWorth" text="Points Worth" />
+                        <StepInput id="stepPoints" value="10" step="5" min="5" />
+                        
+                        <Button id="btnAssignTask" text="Assign Task" type="Emphasized" press=".onCreateChore" />
+                    </form:content>
+                </form:SimpleForm>
+
+                <Table id="adminTable" items="{chores>/items}" headerText="Active Tasks" class="sapUiMediumMarginTop">
+                    <columns>
+                        <Column id="colTaskName"><Text id="txtColTask" text="Task" /></Column>
+                        <Column id="colAssignedTo"><Text id="txtColUser" text="Assigned To" /></Column>
+                        <Column id="colPoints"><Text id="txtColPoints" text="Points" /></Column>
+                        <Column id="colActions" hAlign="End"><Text id="txtColActions" text="Actions" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="adminTableItemTemplate">
+                            <cells>
+                                <Text id="cellTaskName" text="{chores>taskName}" />
+                                <Text id="cellAssignedTo" text="{chores>assignedTo}" />
+                                <ObjectNumber id="cellPointsValue" number="{chores>points}" unit="pts" />
+                                <HBox id="cellActionsBox" justifyContent="End">
+                                    <Button id="btnCompleteChore" icon="sap-icon://accept" type="Accept" press=".onCompleteChore" class="sapUiTinyMarginEnd" />
+                                    <Button id="btnDeleteChore" icon="sap-icon://delete" type="Reject" press=".onDeleteChore" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <Button id="btnResetPoints" text="Reset All Weekly Points" type="Reject" press=".onResetWeeklyPoints" class="sapUiMediumMarginTop" />
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

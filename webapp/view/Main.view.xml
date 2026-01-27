@@ -6,50 +6,49 @@
     xmlns:layout="sap.ui.layout"
     displayBlock="true">
     
-    <f:DynamicPage id="dynamicPageId" headerExpanded="true" toggleHeaderOnTitleClick="true">
+    <f:DynamicPage id="mainPage">
         <f:title>
-            <f:DynamicPageTitle id="pageTitle">
+            <f:DynamicPageTitle id="mainPageTitle">
                 <f:heading>
-                    <Title id="mainTitle" text="{i18n>mainPageTitle}" />
+                    <Title id="headerTitle" text="Family Dashboard" />
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
 
         <f:content>
-            <VBox id="mainContainer" class="sapUiSmallMargin">
+            <VBox id="mainVBox" class="sapUiSmallMargin">
                 
-                <Title id="householdTitle" text="{i18n>householdTitle}" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                <layout:Grid id="householdGrid" defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMarginBottom">
-                    <GenericTile id="shoppingTile" header="{i18n>shoppingTileTitle}" subheader="{i18n>shoppingTileSub}" press=".onOpenShopping">
-                        <TileContent id="shoppingContent">
-                            <NumericContent id="shoppingNum" value="5" indicator="Up" valueColor="Critical" icon="sap-icon://cart" />
+                <Title id="t1" text="Household" class="sapUiSmallMarginBottom" />
+                <layout:Grid id="g1" defaultSpan="XL3 L3 M6 S12">
+                    <GenericTile id="shoppingTile" header="Shopping List" press=".onOpenChores">
+                        <TileContent id="tc1">
+                            <NumericContent id="nc1" value="5" icon="sap-icon://cart" />
                         </TileContent>
                     </GenericTile>
 
-                    <GenericTile id="choresTile" header="{i18n>choresTileTitle}" subheader="{i18n>choresTileSub}" press=".onOpenChores">
-                        <TileContent id="choresContent">
-                            <NumericContent id="choresNum" value="3" valueColor="Good" icon="sap-icon://checklist" />
-                        </TileContent>
-                    </GenericTile>
-                </layout:Grid>
-
-                <Toolbar id="spacer" height="2rem" style="Clear" />
-
-                <Title id="mgmtTitle" text="{i18n>mgmtTitle}" titleStyle="H4" class="sapUiSmallMarginBottom" />
-                <layout:Grid id="mgmtGrid" defaultSpan="XL3 L3 M6 S12">
-                    <GenericTile id="leaveTile" header="{i18n>leaveTileTitle}" subheader="{i18n>leaveTileSub}" press=".onOpenLeave">
-                        <TileContent id="leaveContent">
-                            <FeedContent id="leaveFeed" subheader="2 New Requests" />
-                        </TileContent>
-                    </GenericTile>
-
-                    <GenericTile id="mealTile" header="{i18n>mealTileTitle}" subheader="{i18n>mealTileSub}" press=".onOpenMeals">
-                        <TileContent id="mealContent">
-                            <ImageContent id="mealImage" src="sap-icon://meal" />
+                    <GenericTile id="choresTile" header="Chores" press=".onOpenChores">
+                        <TileContent id="tc2">
+                            <NumericContent id="nc2" value="3" icon="sap-icon://checklist" valueColor="Good" />
                         </TileContent>
                     </GenericTile>
                 </layout:Grid>
 
+                <Title id="t2" text="Management (Locked)" class="sapUiMediumMarginTop sapUiSmallMarginBottom" />
+                <layout:Grid id="g2" defaultSpan="XL3 L3 M6 S12">
+                    <GenericTile id="adminTile" header="Parental Controls" frameType="OneByOne" press=".onOpenAdmin">
+                        <TileContent id="tc3" footer="Restricted">
+                            <ImageContent id="ic1" src="sap-icon://settings" />
+                        </TileContent>
+                    </GenericTile>
+
+                    <GenericTile id="budgetTile" header="Budget Tracker" frameType="OneByOne" press=".onOpenAdmin">
+                        <TileContent id="tc4" footer="Restricted">
+                            <ImageContent id="ic2" src="sap-icon://money-bills" />
+                        </TileContent>
+                    </GenericTile>
+                </layout:Grid>
+
+                <ProgressIndicator id="familyProgress" class="sapUiMediumMarginTop" percentValue="0" displayValue="Loading..." state="Information" />
             </VBox>
         </f:content>
     </f:DynamicPage>

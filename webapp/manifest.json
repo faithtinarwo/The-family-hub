@@ -1,5 +1,5 @@
 {
-  "_version": "1.59.0",
+  "_version": "1.58.0",
   "sap.app": {
     "id": "family.dash",
     "type": "application",
@@ -64,16 +64,12 @@
         {
           "name": "mainRoute",
           "pattern": "",
-          "target": [
-            "targetMain"
-          ]
+          "target": ["targetMain"]
         },
         {
-          "name": "choresRoute",
-          "pattern": "chores",
-          "target": [
-            "targetChores"
-          ]
+          "name": "adminRoute",
+          "pattern": "admin",
+          "target": ["targetAdmin"]
         }
       ],
       "targets": {
@@ -82,9 +78,9 @@
           "viewName": "Main",
           "viewLevel": 1
         },
-        "targetChores": {
-          "viewId": "Chores",
-          "viewName": "Chores",
+        "targetAdmin": {
+          "viewId": "Admin",
+          "viewName": "Admin",
           "viewLevel": 2
         }
       }
