@@ -12,59 +12,50 @@ sap.ui.define([
 
     return Controller.extend("family.dash.controller.Main", {
         onInit: function () {
-            // 1. Setup Data
             var oData = {
                 isAdmin: false,
-                points: { Tina: 100, Anopa: 50, Anotida: 50 },
-                shopping: [{ item: "Milk", bought: false }],
-                history: []
+                points: { Tina: 100, Anopa: 50, Anotida: 20 },
+                shopping: [],
+                leaderboard: [] 
             };
 
-            // 2. Load Persisted Data
-            try {
-                var sSaved = localStorage.getItem("familyData");
-                if (sSaved) {
-                    var oSavedData = JSON.parse(sSaved);
-                    Object.assign(oData, oSavedData);
-                }
-            } catch (e) {
-                console.error("Local storage empty or corrupt.");
+            var sSaved = localStorage.getItem("familyData");
+            if (sSaved) {
+                Object.assign(oData, JSON.parse(sSaved));
             }
 
             var oModel = new JSONModel(oData);
             this.getView().setModel(oModel, "family");
 
-            // 3. Listen for Chore updates to refresh the progress bar
-            var oChoresModel = this.getOwnerComponent().getModel("chores");
-            if (oChoresModel) {
-                oChoresModel.attachPropertyChange(this._updateProgress, this);
-                // Also update when the page is first loaded
-                this._updateProgress();
-            }
+            this._refreshLeaderboard();
+            
+            oModel.attachPropertyChange(function(oEvent) {
+                if (oEvent.getParameter("path").includes("points")) {
+                    this._refreshLeaderboard();
+                }
+            }.bind(this));
         },
 
         /* =========================================================== */
-        /* NAVIGATION & TILE INTERACTION                               */
+        /* TILE NAVIGATION                                             */
         /* =========================================================== */
 
         onOpenChores: function () {
-            // Sends the kids to the Chores view
             this.getOwnerComponent().getRouter().navTo("choresRoute");
         },
 
         onOpenShopping: function () {
-            // Finds the shopping panel on the dashboard and scrolls to it
             var oPanel = this.byId("shoppingPanel");
             if (oPanel) {
                 oPanel.setExpanded(true);
                 oPanel.getDomRef().scrollIntoView({ behavior: 'smooth', block: 'start' });
-                MessageToast.show("Opening Shopping List...");
             }
         },
 
         onOpenAdmin: function () {
-            var oFamilyModel = this.getView().getModel("family");
-            if (oFamilyModel.getProperty("/isAdmin")) {
+            // Check if already authenticated
+            var oModel = this.getView().getModel("family");
+            if (oModel.getProperty("/isAdmin")) {
                 this.getOwnerComponent().getRouter().navTo("adminRoute");
             } else {
                 this._showLoginDialog();
@@ -72,7 +63,7 @@ sap.ui.define([
         },
 
         /* =========================================================== */
-        /* DASHBOARD LOGIC                                             */
+        /* SHOPPING LOGIC                                              */
         /* =========================================================== */
 
         itemsCount: function (aItems) {
@@ -86,11 +77,10 @@ sap.ui.define([
             var sNewItem = oInput.getValue();
 
             if (sNewItem) {
-                aShop.push({ item: sNewItem, bought: false });
+                aShop.push({ item: sNewItem });
                 oModel.setProperty("/shopping", aShop);
                 oInput.setValue("");
-                this._saveToLocal();
-                MessageToast.show("Added to list");
+                localStorage.setItem("familyData", JSON.stringify(oModel.getData()));
             }
         },
 
@@ -102,49 +92,60 @@ sap.ui.define([
 
             aShop.splice(iIndex, 1);
             oModel.setProperty("/shopping", aShop);
-            this._saveToLocal();
+            localStorage.setItem("familyData", JSON.stringify(oModel.getData()));
         },
 
-        _updateProgress: function () {
-            var oProgress = this.byId("familyProgress");
-            var oChoresModel = this.getOwnerComponent().getModel("chores");
-            if (oProgress && oChoresModel) {
-                var aItems = oChoresModel.getProperty("/items") || [];
-                var iRemaining = aItems.length;
-                
-                oProgress.setDisplayValue(iRemaining === 0 ? "All Done! 🎉" : iRemaining + " tasks to go!");
-                // Simple logic: if 0 items, 100%. If items exist, show partial progress.
-                oProgress.setPercentValue(iRemaining === 0 ? 100 : 40); 
-                oProgress.setState(iRemaining === 0 ? "Success" : "Information");
-            }
-        },
+        /* =========================================================== */
+        /* INTERNAL HELPERS                                            */
+        /* =========================================================== */
 
-        _saveToLocal: function () {
-            var oData = this.getView().getModel("family").getData();
-            localStorage.setItem("familyData", JSON.stringify(oData));
+        _refreshLeaderboard: function () {
+            var oModel = this.getView().getModel("family");
+            var oPoints = oModel.getProperty("/points");
+
+            var aScores = Object.keys(oPoints).map(function(key) {
+                return {
+                    name: key,
+                    points: oPoints[key],
+                    color: key === "Tina" ? "Accent1" : (key === "Anopa" ? "Accent2" : "Accent3")
+                };
+            });
+
+            aScores.sort((a, b) => b.points - a.points);
+            var aPodiumOrder = [aScores[1], aScores[0], aScores[2]];
+            oModel.setProperty("/leaderboard", aPodiumOrder);
         },
 
         _showLoginDialog: function () {
             var oView = this.getView();
-            var oInput = new Input({ id: "pinInput", type: "Password", placeholder: "PIN" });
+            var oController = this;
+            
             var oDialog = new Dialog({
-                title: "Parental Gate",
-                content: [new Text({ text: "Enter PIN (1234):" }), oInput],
-                beginButton: new Button({
-                    text: "Login",
-                    press: function () {
-                        if (oInput.getValue() === "1234") {
-                            oView.getModel("family").setProperty("/isAdmin", true);
-                            oDialog.close();
-                            oView.getController().getOwnerComponent().getRouter().navTo("adminRoute");
-                        } else {
-                            MessageToast.show("Access Denied");
+                title: "Parental Access",
+                type: "Message",
+                content: [
+                    new Text({ text: "Enter Parent PIN to continue:" }),
+                    new Input({
+                        id: "pinInput",
+                        type: "Password",
+                        placeholder: "1234",
+                        liveChange: function(oEvent) {
+                            var sVal = oEvent.getParameter("value");
+                            if (sVal === "1234") {
+                                oView.getModel("family").setProperty("/isAdmin", true);
+                                oDialog.close();
+                                oController.getOwnerComponent().getRouter().navTo("adminRoute");
+                            }
                         }
-                    }
+                    })
+                ],
+                beginButton: new Button({
+                    text: "Cancel",
+                    press: function () { oDialog.close(); }
                 }),
-                endButton: new Button({ text: "Cancel", press: function () { oDialog.close(); } }),
                 afterClose: function() { oDialog.destroy(); }
             });
+
             oDialog.open();
         }
     });

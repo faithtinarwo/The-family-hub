@@ -2,29 +2,46 @@
     controllerName="family.dash.controller.Chores"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:l="sap.ui.layout">
-    <Page id="choresPage" title="My Chores" showNavButton="true" navButtonPress=".onNavBack">
-        <content>
-            <List id="choresList" 
-                  items="{chores>/items}" 
-                  headerText="Tasks for Today"
-                  noDataText="All caught up! Time to relax.">
-                <CustomListItem id="choreListItem">
-                    <HBox id="choreItemBox" alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMargin">
-                        <VBox id="choreTextContainer">
-                            <Text id="choreNameText" text="{chores>taskName}" renderWhitespace="true" class="sapUiSmallMarginBottom" />
-                            <Label id="choreRewardLabel" text="Reward: {chores>points} points" design="Bold" />
-                        </VBox>
-                        <CheckBox id="choreStatusCheckBox" selected="{chores>completed}" select=".onTaskStatusChange" />
-                    </HBox>
-                </CustomListItem>
-            </List>
-        </content>
-        <footer>
-            <OverflowToolbar id="choresFooterToolbar">
-                <ToolbarSpacer id="footerSpacer" />
-                <Button id="claimRewardsButton" text="Claim Rewards" type="Emphasized" press=".onClaimRewards" />
-            </OverflowToolbar>
-        </footer>
-    </Page>
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core">
+    <f:DynamicPage id="choresPage">
+        <f:title>
+            <f:DynamicPageTitle id="choresPageTitle">
+                <f:heading>
+                    <Title id="choresHeadingText" text="My Tasks &amp; Chores" />
+                </f:heading>
+                <f:navigationActions>
+                    <Button id="btnNavBackFromChores" icon="sap-icon://home" press=".onNavBack" />
+                </f:navigationActions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:content>
+            <VBox id="choresContent" class="sapUiSmallMargin">
+                <SearchField id="searchChores" liveChange=".onSearch" placeholder="Search tasks..." class="sapUiSmallMarginBottom" />
+                
+                <List id="kidsChoreList" 
+                      items="{chores>/items}" 
+                      noDataText="No chores assigned yet. Relax!">
+                    <items>
+                        <ObjectListItem id="choreItem"
+                            title="{chores>taskName}"
+                            number="{chores>points}"
+                            numberUnit="pts"
+                            type="Inactive">
+                            <attributes>
+                                <ObjectAttribute id="attrAssignee" text="Assigned to: {chores>assignedTo}" />
+                                <ObjectAttribute id="attrDue" text="Due: {chores>dueDate}" visible="{= !!${chores>dueDate} }" />
+                            </attributes>
+                            <firstStatus>
+                                <ObjectStatus id="statusIndicator"
+                                    text="{chores>status}"
+                                    state="{= ${chores>status} === 'New' ? 'Information' : 'Warning'}" />
+                            </firstStatus>
+                        </ObjectListItem>
+                    </items>
+                </List>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>

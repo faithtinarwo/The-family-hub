@@ -13,7 +13,7 @@
                     <Title id="adminHeadingText" text="Parental Controls &amp; Chores" />
                 </f:heading>
                 <f:navigationActions>
-                    <Button id="btnNavBackHome" icon="sap-icon://home" tooltip="Back to Dashboard" press=".onNavBack" />
+                    <Button id="btnNavBackFromAdmin" icon="sap-icon://home" tooltip="Back to Dashboard" press=".onNavBack" />
                 </f:navigationActions>
             </f:DynamicPageTitle>
         </f:title>
@@ -31,6 +31,9 @@
                             <core:Item id="itemAnopa" key="Anopa" text="Anopa" />
                             <core:Item id="itemAnotida" key="Anotida" text="Anotida" />
                         </Select>
+
+                        <Label id="lblDueDate" text="Due Date" />
+                        <DatePicker id="dateDue" valueFormat="yyyy-MM-dd" displayFormat="short" />
                         
                         <Label id="lblPointsWorth" text="Points Worth" />
                         <StepInput id="stepPoints" value="10" step="5" min="5" />
@@ -43,15 +46,30 @@
                     <columns>
                         <Column id="colTaskName"><Text id="txtColTask" text="Task" /></Column>
                         <Column id="colAssignedTo"><Text id="txtColUser" text="Assigned To" /></Column>
+                        <Column id="colStatus"><Text id="txtColStatus" text="Status" /></Column>
                         <Column id="colPoints"><Text id="txtColPoints" text="Points" /></Column>
                         <Column id="colActions" hAlign="End"><Text id="txtColActions" text="Actions" /></Column>
                     </columns>
                     <items>
                         <ColumnListItem id="adminTableItemTemplate">
                             <cells>
-                                <Text id="cellTaskName" text="{chores>taskName}" />
+                                <VBox id="vbTaskInfo">
+                                    <Text id="cellTaskName" text="{chores>taskName}" />
+                                    <ObjectStatus id="cellDueDate" 
+                                                  text="Due: {chores>dueDate}" 
+                                                  state="Warning" 
+                                                  visible="{= !!${chores>dueDate} }" />
+                                </VBox>
+                                
                                 <Text id="cellAssignedTo" text="{chores>assignedTo}" />
+                                
+                                <ObjectStatus id="cellStatus" 
+                                              text="{chores>status}" 
+                                              state="{= ${chores>status} === 'New' ? 'Information' : 'Warning'}" 
+                                              icon="{= ${chores>status} === 'New' ? 'sap-icon://marker-contents' : 'sap-icon://process'}" />
+                                
                                 <ObjectNumber id="cellPointsValue" number="{chores>points}" unit="pts" />
+                                
                                 <HBox id="cellActionsBox" justifyContent="End">
                                     <Button id="btnCompleteChore" icon="sap-icon://accept" type="Accept" press=".onCompleteChore" class="sapUiTinyMarginEnd" />
                                     <Button id="btnDeleteChore" icon="sap-icon://delete" type="Reject" press=".onDeleteChore" />
@@ -64,13 +82,12 @@
                 <Panel id="pnlCleanup" headerText="Data Maintenance" class="sapUiMediumMarginTop">
                     <HBox id="hbCleanup" justifyContent="SpaceBetween" alignItems="Center">
                         <VBox id="vbCleanupText">
-                            <Text id="txtCleanupInfo" text="Clear old history and shopping logs to keep the app fast." />
+                            <Text id="txtCleanupInfo" text="Clear old history and shopping logs." />
                         </VBox>
                         <MenuButton id="mbCleanup" text="Purge History" type="Ghost" icon="sap-icon://delete">
                             <menu>
                                 <Menu id="menuPurge">
                                     <MenuItem id="mi30" text="Older than 30 Days" icon="sap-icon://history" press=".onPurgeHistory" key="30" />
-                                    <MenuItem id="mi60" text="Older than 60 Days" icon="sap-icon://history" press=".onPurgeHistory" key="60" />
                                     <MenuItem id="miAll" text="Delete Everything" icon="sap-icon://alert" press=".onPurgeHistory" key="all" />
                                 </Menu>
                             </menu>

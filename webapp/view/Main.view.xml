@@ -19,18 +19,53 @@
         <f:content>
             <VBox id="mainVBox" class="sapUiSmallMargin">
                 
+                <VBox id="leaderboardContainer" alignItems="Center" class="sapUiMediumMarginBottom">
+                    <Title id="tLeaderboard" text="🏆 Star Achievers" titleStyle="H2" class="sapUiSmallMarginBottom" />
+                    <FlexBox id="podiumBox" height="230px" alignItems="End" justifyContent="Center" 
+                             items="{family>/leaderboard}">
+                        <items>
+                            <VBox id="podiumVBox" alignItems="Center" class="sapUiSmallMarginBeginEnd">
+                                <core:Icon id="icoCrown" 
+                                           src="sap-icon://lead" 
+                                           color="#E6B800" 
+                                           size="1.5rem"
+                                           visible="{= ${family>points} === ${family>/leaderboard/1/points} &amp;&amp; ${family>points} > 0 }" />
+                                
+                                <Avatar id="avPodium" 
+                                        src="sap-icon://person-placeholder" 
+                                        displaySize="{= ${family>points} === ${family>/leaderboard/1/points} ? 'M' : 'S'}" 
+                                        backgroundColor="{family>color}" 
+                                        class="sapUiTinyMarginBottom" />
+                                
+                                <Text id="txtName" text="{family>name}" class="sapUiTinyMarginTop" />
+                                
+                                <ObjectStatus id="statPoints" 
+                                              text="{family>points} pts" 
+                                              state="{= ${family>points} === ${family>/leaderboard/1/points} ? 'Success' : 'None'}" 
+                                              inverted="true" />
+
+                                <VBox id="basePodium" 
+                                      width="{= ${family>points} === ${family>/leaderboard/1/points} ? '90px' : '70px'}" 
+                                      height="{= ${family>points} === ${family>/leaderboard/1/points} ? '90px' : (${family>points} === ${family>/leaderboard/0/points} ? '50px' : '30px')}" 
+                                      backgroundDesign="Solid" /> 
+                            </VBox>
+                        </items>
+                    </FlexBox>
+                </VBox>
+
+                <VBox id="sectionDivider" height="2px" width="100%" backgroundDesign="Translucent" class="sapUiMediumMarginBottom" />
+
                 <Title id="t1" text="Household" class="sapUiSmallMarginBottom" />
                 <layout:Grid id="g1" defaultSpan="XL3 L3 M6 S12" hSpacing="0.5" vSpacing="0.5">
-                    
                     <GenericTile id="shoppingTile" header="Shopping List" press=".onOpenShopping">
-                        <TileContent id="tc1">
-                            <NumericContent id="nc1" value="{path: 'family>/shopping', formatter: '.itemsCount'}" icon="sap-icon://cart" />
+                        <TileContent id="tcShopping">
+                            <NumericContent id="ncShopping" value="{path: 'family>/shopping', formatter: '.itemsCount'}" icon="sap-icon://cart" />
                         </TileContent>
                     </GenericTile>
 
                     <GenericTile id="choresTile" header="Chores" press=".onOpenChores">
-                        <TileContent id="tc2">
-                            <NumericContent id="nc2" value="3" icon="sap-icon://checklist" valueColor="Good" />
+                        <TileContent id="tcChores">
+                            <NumericContent id="ncChores" value="3" icon="sap-icon://checklist" valueColor="Good" />
                         </TileContent>
                     </GenericTile>
                 </layout:Grid>
@@ -50,13 +85,13 @@
                     </headerToolbar>
                     <List id="shoppingList" items="{family>/shopping}" noDataText="List is empty!">
                         <CustomListItem id="shopItemTemplate">
-                            <HBox id="hbItem" alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiTinyMarginTopBottom">
-                                <HBox id="hbLeft" alignItems="Center">
-                                    <core:Icon id="icoCart" src="sap-icon://cart" class="sapUiSmallMarginEnd" />
-                                    <Text id="txtItemName" text="{family>item}" wrapping="true" />
+                            <HBox id="hbShopItemRow" alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiTinyMarginTopBottom">
+                                <HBox id="hbShopItemLeft" alignItems="Center">
+                                    <core:Icon id="icoShopCart" src="sap-icon://cart" class="sapUiSmallMarginEnd" />
+                                    <Text id="txtShopItemName" text="{family>item}" wrapping="true" />
                                 </HBox>
-                                <HBox id="hbActions">
-                                    <Button id="btnDeleteShop" icon="sap-icon://delete" type="Transparent" press=".onDeleteItem" />
+                                <HBox id="hbShopItemRight">
+                                    <Button id="btnDeleteShopItem" icon="sap-icon://delete" type="Transparent" press=".onDeleteItem" />
                                 </HBox>
                             </HBox>
                         </CustomListItem>
@@ -66,19 +101,19 @@
                 <Title id="t2" text="Management (Locked)" class="sapUiMediumMarginTop sapUiSmallMarginBottom" />
                 <layout:Grid id="g2" defaultSpan="XL3 L3 M6 S12" hSpacing="0.5" vSpacing="0.5">
                     <GenericTile id="adminTile" header="Parental Controls" press=".onOpenAdmin">
-                        <TileContent id="tc3" footer="Restricted">
-                            <ImageContent id="ic1" src="sap-icon://settings" />
+                        <TileContent id="tcAdmin" footer="Restricted">
+                            <ImageContent id="icAdmin" src="sap-icon://settings" />
                         </TileContent>
                     </GenericTile>
 
                     <GenericTile id="budgetTile" header="Budget Tracker" press=".onOpenAdmin">
-                        <TileContent id="tc4" footer="Restricted">
-                            <ImageContent id="ic2" src="sap-icon://money-bills" />
+                        <TileContent id="tcBudget" footer="Restricted">
+                            <ImageContent id="icBudget" src="sap-icon://money-bills" />
                         </TileContent>
                     </GenericTile>
                 </layout:Grid>
 
-                <ProgressIndicator id="familyProgress" class="sapUiMediumMarginTop" percentValue="0" displayValue="Loading..." state="Information" />
+                <ProgressIndicator id="familyProgress" class="sapUiMediumMarginTop" percentValue="0" displayValue="Ready" state="Information" />
             </VBox>
         </f:content>
     </f:DynamicPage>
