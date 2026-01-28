@@ -1,6 +1,9 @@
 Family Hub Dashboard
+
 Project Overview
 The Family Hub Dashboard is a productivity application built using the SAPUI5 framework and SAP Fiori design principles. It is designed to manage household tasks, track grocery requirements, and manage a point-based reward system for family members (Tina, Anopa, and Anotida).
+
+Unlike a desktop business tool, a Family Hub is used 'on-the-go' and by users of varying tech-savviness. I designed this with a Mobile-First approach, using large touch-targets (sap.m.GenericTile) and a simplified navigation structure. The design rationale was to minimize clicks-to-action, ensuring that common tasks—like checking a chore or adding a grocery item—can be completed in under five seconds on a mobile device.
 
 In a corporate context, this application serves as a prototype for a Task Management and Incentive Tracking System, demonstrating core competencies in data binding, routing, and role-based access control.
 
